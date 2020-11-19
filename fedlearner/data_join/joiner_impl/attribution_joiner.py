@@ -282,6 +282,7 @@ class AttributionJoiner(ExampleJoiner):
                 self._prepare_join(state_stale)
         join_data_finished = False
 
+        force_steps = 1
         while True:
             leader_filled = self._fill_leader_join_window()
             leader_exhausted = sync_example_id_finished and \
@@ -320,7 +321,9 @@ class AttributionJoiner(ExampleJoiner):
                                            self._leader_join_window)
             self._follower_join_window.forward(stride[0])
             self._leader_join_window.forward(stride[1])
-            logging.info("Stat: raw_pairs=%d, pairs=%d, stride=%s", \
+            logging.info("Stat: pair_buf=%d, raw_pairs=%d, pairs=%d, "\
+                         "stride=%s", \
+                         len(self._sorted_attri_buf_by_leader_index), \
                          len(raw_pairs), len(pairs), stride)
 
             if not leader_filled and not sync_example_id_finished:
@@ -332,7 +335,12 @@ class AttributionJoiner(ExampleJoiner):
 
             if stride == (0, 0):
                 # move by force if no new example id from leader
-                self._leader_join_window.forward(1)
+                self._leader_join_window.forward(force_steps)
+                if sync_example_id_finished:
+                    force_steps += force_steps
+                print(force_steps)
+            else:
+                force_steps = 1
         if self._get_data_block_builder(False) is not None and \
                 (self._need_finish_data_block_since_interval() or
                     join_data_finished):
