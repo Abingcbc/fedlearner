@@ -8,6 +8,7 @@ dependencies:
 - name: ingress-nginx
   repository: ""
   version: 2.1.0
+  condition: ingress-nginx.enabled
 - name: nfs-client-provisioner
   version: 1.2.8
   condition: nfs-client-provisioner.enabled

@@ -1,11 +1,11 @@
 nfs-server-provisioner:
-  enabled: true
-
-nfs-client-provisioner:
   enabled: false
 
+nfs-client-provisioner:
+  enabled: true
+
   nfs:
-    path: /
+    path: /data
     mountOptions:
       - vers=3
       - nolock,tcp,noresvport
@@ -19,7 +19,7 @@ nfs-client-provisioner:
     pullPolicy: IfNotPresent
 
 mariadb:
-  enabled: true
+  enabled: false
   master:
     persistence:
       storageClass: nfs
@@ -59,6 +59,7 @@ elastic-stack:
       - "{{ .Release.Name }}-elasticsearch-client:9200"
 
 ingress-nginx:
+  enabled: false
   controller:
     image:
       repository: fedlearner/nginx-ingress-controller
@@ -83,7 +84,7 @@ ingress-nginx:
       enabled: false
 
 etcd:
-  enabled: true
+  enabled: false
   auth:
     rbac:
       enabled: false
